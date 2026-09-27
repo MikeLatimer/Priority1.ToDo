@@ -10,6 +10,8 @@ public class Todo : EntityBase
 
     public bool IsComplete { get; set; } = false;
 
+    public DateTime? DueDate { get; set; }
+
     public int TaskItemId { get; set; }
 
     public TaskItem TaskItem { get; set; } = null!;
