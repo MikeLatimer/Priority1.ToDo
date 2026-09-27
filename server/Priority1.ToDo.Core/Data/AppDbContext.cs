@@ -12,6 +12,8 @@ public class AppDbContext : DbContext
 
     public DbSet<Todo> Todos => Set<Todo>();
 
+    public DbSet<TaskItem> TaskItems => Set<TaskItem>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
