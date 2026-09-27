@@ -16,4 +16,6 @@ public abstract class EntityBase
 
     [MaxLength(100)]
     public string? UpdatedBy { get; set; }
+
+    public bool IsActive { get; set; } = true;
 }
