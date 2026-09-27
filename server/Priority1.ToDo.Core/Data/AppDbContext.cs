@@ -41,11 +41,19 @@ public class AppDbContext : DbContext
             {
                 var now = DateTime.UtcNow;
 
-                entity.UpdateDate = now;
+                // TODO: Set CreatedBy and UpdatedBy using the current username from UserService.
+                var currentUser = "System";
 
                 if (entry.State == EntityState.Added)
                 {
                     entity.CreateDate = now;
+                    entity.UpdateDate = now;
+                    entity.CreatedBy = currentUser;
+                }
+                else if (entry.State == EntityState.Modified)
+                {
+                    entity.UpdateDate = now;
+                    entity.UpdatedBy = currentUser;
                 }
             }
         }

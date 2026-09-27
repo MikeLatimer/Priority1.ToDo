@@ -11,5 +11,9 @@ public abstract class EntityBase
 
     public DateTime UpdateDate { get; set; }
 
-    //TODO: Add updated by and created by here.
+    [MaxLength(100)]
+    public string CreatedBy { get; set; } = string.Empty;
+
+    [MaxLength(100)]
+    public string? UpdatedBy { get; set; }
 }
