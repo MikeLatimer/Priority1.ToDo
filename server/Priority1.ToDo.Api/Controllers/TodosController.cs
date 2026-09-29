@@ -17,9 +17,10 @@ public class TodosController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<List<TodoItem>>> GetAll([FromQuery] int? taskItemId,CancellationToken ct)
+    public async Task<ActionResult<List<TodoItem>>> GetAll([FromQuery] int? taskItemId, CancellationToken ct)
     {
         var todos = await _todoService.GetAllAsync(taskItemId, ct);
+
         return Ok(todos.Select(TodoItem.From));
     }
 
@@ -27,13 +28,20 @@ public class TodosController : ControllerBase
     public async Task<ActionResult<TodoItem>> GetById(int id, CancellationToken ct)
     {
         var todo = await _todoService.GetByIdAsync(id, ct);
+
         return todo is null ? NotFound() : Ok(TodoItem.From(todo));
     }
 
     [HttpPost]
-    public async Task<ActionResult<TodoItem>> Create([FromBody] CreateTodoRequest request, CancellationToken ct)
+    public async Task<ActionResult<TodoItem>> Create(CreateTodoRequest request, CancellationToken ct)
     {
         var created = await _todoService.CreateAsync(request.ToModel(), ct);
+
+        if (created is null)
+        {
+            return BadRequest("The selected Priority does not exist or is inactive.");
+        }
+
         return CreatedAtAction(nameof(GetById), new { id = created.Id }, TodoItem.From(created));
     }
 
@@ -41,6 +49,7 @@ public class TodosController : ControllerBase
     public async Task<ActionResult<TodoItem>> Update(int id, [FromBody] UpdateTodoRequest request, CancellationToken ct)
     {
         var updated = await _todoService.UpdateAsync(request.ToModel(id), ct);
+
         return updated is null ? NotFound() : Ok(TodoItem.From(updated));
     }
 
@@ -48,6 +57,7 @@ public class TodosController : ControllerBase
     public async Task<IActionResult> Delete(int id, CancellationToken ct)
     {
         var deleted = await _todoService.DeleteAsync(id, ct);
+
         return deleted ? NoContent() : NotFound();
     }
 }

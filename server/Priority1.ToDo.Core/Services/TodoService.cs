@@ -16,7 +16,7 @@ public class TodoService : ITodoService
 
     public async Task<List<Todo>> GetAllAsync(int? taskItemId = null, CancellationToken ct = default)
     {
-        var query = _context.Todos.Where(t => t.IsActive);
+        var query = _context.Todos.Where(t => t.IsActive && t.TaskItem.IsActive);
 
         if (taskItemId.HasValue)
         {
@@ -28,21 +28,37 @@ public class TodoService : ITodoService
 
     public async Task<Todo?> GetByIdAsync(int id, CancellationToken ct = default)
     {
-        return await _context.Todos.FirstOrDefaultAsync( t => t.Id == id && t.IsActive,ct);
+        return await _context.Todos.FirstOrDefaultAsync(t => t.Id == id && t.IsActive && t.TaskItem.IsActive, ct);
     }
 
-    public async Task<Todo> CreateAsync(Todo itemToCreate, CancellationToken ct = default)
+    public async Task<Todo?> CreateAsync(Todo itemToCreate, CancellationToken ct = default)
     {
+        var taskItemExists = await _context.TaskItems.AnyAsync(t => t.Id == itemToCreate.TaskItemId && t.IsActive, ct);
+
+        if (!taskItemExists)
+        {
+            return null;
+        }
+
         _context.Todos.Add(itemToCreate);
+
         await _context.SaveChangesAsync(ct);
+
         return itemToCreate;
     }
 
     public async Task<Todo?> UpdateAsync(Todo itemToUpdate, CancellationToken ct = default)
     {
-        var todo = await _context.Todos.FirstOrDefaultAsync(t => t.Id == itemToUpdate.Id && t.IsActive,ct);
+        var todo = await _context.Todos.FirstOrDefaultAsync(t => t.Id == itemToUpdate.Id && t.IsActive && t.TaskItem.IsActive, ct);
 
         if (todo is null)
+        {
+            return null;
+        }
+
+        var taskItemExists = await _context.TaskItems.AnyAsync(t => t.Id == itemToUpdate.TaskItemId && t.IsActive, ct);
+
+        if (!taskItemExists)
         {
             return null;
         }
@@ -59,7 +75,8 @@ public class TodoService : ITodoService
 
     public async Task<bool> DeleteAsync(int id, CancellationToken ct = default)
     {
-        var todo = await _context.Todos.FirstOrDefaultAsync( t => t.Id == id && t.IsActive,ct);
+        var todo = await _context.Todos
+            .FirstOrDefaultAsync(t => t.Id == id && t.IsActive, ct);
 
         if (todo is null)
         {

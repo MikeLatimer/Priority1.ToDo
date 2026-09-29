@@ -2,6 +2,9 @@ using Microsoft.EntityFrameworkCore;
 using Priority1.ToDo.Core.Data;
 using Priority1.ToDo.Core.Services.Interfaces;
 using Priority1.ToDo.Core.Services;
+using FluentValidation;
+using FluentValidation.AspNetCore;
+using Priority1.ToDo.Api.Validators;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +22,10 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddFluentValidationAutoValidation();
+
+builder.Services.AddValidatorsFromAssemblyContaining<CreateTodoRequestValidator>();
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(DevCorsPolicy, policy =>
@@ -28,7 +35,6 @@ builder.Services.AddCors(options =>
 });
 
 var app = builder.Build();
-
 
 if (app.Environment.IsDevelopment())
 {

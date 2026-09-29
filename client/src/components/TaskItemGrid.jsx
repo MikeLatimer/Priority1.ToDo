@@ -83,7 +83,7 @@ export default function TaskItemGrid({
                             className="btn btn-priority btn-sm"
                             onClick={() => onAddTodo(params.data)}
                         >
-                            Add / View Todos
+                            Manage Todos
                         </button>
 
                         <button

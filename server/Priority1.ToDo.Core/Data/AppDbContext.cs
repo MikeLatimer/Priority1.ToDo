@@ -41,7 +41,6 @@ public class AppDbContext : DbContext
             {
                 var now = DateTime.UtcNow;
 
-                // TODO: Set CreatedBy and UpdatedBy using the current username from UserService.
                 var currentUser = "System";
 
                 if (entry.State == EntityState.Added)

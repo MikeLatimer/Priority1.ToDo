@@ -1,6 +1,20 @@
 # Priority1.ToDo
 
-A deliberately minimal full-stack TODO application. It is the starting point for a take-home skills exercise: the CRUD basics work end to end, leaving obvious room to add functionality.
+Priority1.ToDo is a full-stack ToDo application built with ASP.NET Core, Entity Framework Core, SQL Server, React, and AG Grid.
+
+Users can manage multiple Priority lists and assign ToDo items to each list. ToDos support due dates, completion status, sorting, overdue identification, validation, and soft deletion.
+
+## Features
+
+- Multiple Priority lists
+- Create, rename, and delete Priorities
+- Add and manage ToDos by Priority
+- Due dates and overdue indicators
+- Sort by Due Date and Created Date
+- Open/Closed Todo status
+- Soft deletes
+- FluentValidation
+- xUnit tests
 
 - **Backend:** .NET 8 Web API, Entity Framework Core (Code First), SQL Server
 - **Frontend:** React (Vite, plain JavaScript)
@@ -121,3 +135,17 @@ The `Todo` entity: `Id`, `Title` (required), `IsComplete` (default `false`), `Cr
 - CORS is wide open for localhost in Development to keep local dev frictionless.
 - Migrations are applied manually (step 2), never on startup.
 
+## Future Improvements
+
+If I had more time to continue building this out, I would focus on a few areas:
+
+- Add user login and authentication so each user could have their own Priority lists.
+- Add more integration tests around the API and database behavior.
+- Increase unit test coverage for edge cases and validation scenarios.
+- Improve error handling so API errors are more consistent and easier to troubleshoot.
+- Add search and filtering for Priorities and ToDos.
+- Add pagination if the number of Priorities or ToDos became large.
+- Allow more ToDo fields to be edited, including the Due Date.
+- Improve the mobile layout and overall accessibility.
+- Add application logging and monitoring for better production support.
+- Add a CI/CD pipeline so builds and tests run automatically with new changes.

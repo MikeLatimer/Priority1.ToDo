@@ -6,10 +6,23 @@ export default function TodoList({
     onEdit,
     onDelete,
 }) {
+    function isTodoOverdue(todo) {
+        if (todo.isComplete || !todo.dueDate) {
+            return false;
+        }
+
+        const dueDate = todo.dueDate.split('T')[0];
+
+        const today = new Date()
+            .toLocaleDateString('en-CA');
+
+        return dueDate < today;
+    }
+
     const columnDefs = useMemo(
         () => [
             {
-                headerName: 'Edit',
+                headerName: '',
                 width: 100,
                 sortable: false,
                 filter: false,
@@ -48,19 +61,51 @@ export default function TodoList({
                 },
             },
             {
-                // TODO: Make due date editable, will need to update to DateOnl
                 field: 'dueDate',
                 headerName: 'Due Date',
                 width: 170,
                 sortable: true,
                 valueFormatter: (params) =>
                     params.value
-                        ? new Date(params.value).toLocaleDateString()
+                        ? new Date(
+                            `${params.value.split('T')[0]}T00:00:00`
+                        ).toLocaleDateString()
                         : '',
             },
             {
+                field: 'isComplete',
+                headerName: 'Status',
+                width: 150,
+                sortable: true,
+                cellRenderer: (params) => {
+                    const todo = params.data;
+
+                    if (isTodoOverdue(todo)) {
+                        return (
+                            <span className="badge text-bg-danger">
+                                Overdue
+                            </span>
+                        );
+                    }
+
+                    return (
+                        <span
+                            className={
+                                todo.isComplete
+                                    ? 'badge text-bg-success'
+                                    : 'badge text-bg-secondary'
+                            }
+                        >
+                            {todo.isComplete
+                                ? 'Closed'
+                                : 'Open'}
+                        </span>
+                    );
+                },
+            },
+            {
                 field: 'createDate',
-                headerName: 'Create Date',
+                headerName: 'Created',
                 width: 170,
                 sortable: true,
                 valueFormatter: (params) =>
@@ -69,64 +114,6 @@ export default function TodoList({
                             params.value
                         ).toLocaleDateString()
                         : '',
-            },
-            {
-                // TODO: Allow users to update Todo status between Open and Closed.
-                // Overdue status should be calculated automatically based on the due date.
-                field: 'isComplete',
-                headerName: 'Status',
-                width: 150,
-                editable: true,
-                cellEditor: 'agSelectCellEditor',
-                cellEditorParams: {
-                    values: [true, false],
-                },
-                valueFormatter: (params) =>
-                    params.value
-                        ? 'Complete'
-                        : 'Open',
-                cellRenderer: (params) => {
-                    if (params.value) {
-                        return (
-                            <span className="badge text-bg-success">
-                                Complete
-                            </span>
-                        );
-                    }
-
-                    const isOverdue =
-                        params.data.dueDate &&
-                        new Date(
-                            params.data.dueDate
-                        ) < new Date();
-
-                    return (
-                        <span
-                            className={
-                                isOverdue
-                                    ? 'badge text-bg-danger'
-                                    : 'badge text-bg-secondary'
-                            }
-                        >
-                            {isOverdue
-                                ? 'Overdue'
-                                : 'Open'}
-                        </span>
-                    );
-                },
-                onCellValueChanged: (params) => {
-                    if (
-                        params.oldValue !==
-                        params.newValue
-                    ) {
-                        onEdit({
-                            ...params.data,
-                            isComplete:
-                                params.newValue === true ||
-                                params.newValue === 'true',
-                        });
-                    }
-                },
             },
             {
                 headerName: 'Actions',
@@ -171,20 +158,11 @@ export default function TodoList({
                 overlayNoRowsTemplate="<span>No ToDos found</span>"
                 stopEditingWhenCellsLoseFocus={true}
                 suppressCellFocus={true}
-                getRowClass={(params) => {
-                    const todo = params.data;
-
-                    if (
-                        !todo?.isComplete &&
-                        todo?.dueDate &&
-                        new Date(todo.dueDate) <
-                        new Date()
-                    ) {
-                        return 'todo-grid-overdue';
-                    }
-
-                    return '';
-                }}
+                getRowClass={(params) =>
+                    isTodoOverdue(params.data)
+                        ? 'todo-grid-overdue'
+                        : ''
+                }
             />
         </div>
     );

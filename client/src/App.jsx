@@ -143,7 +143,7 @@ export default function App() {
         dueDate,
     }) {
         if (!selectedTaskItem) {
-            return;
+            return false;
         }
 
         try {
@@ -160,8 +160,11 @@ export default function App() {
                 ...prev,
                 created,
             ]);
+
+            return true;
         } catch (e) {
             setError(e.message);
+            return false;
         }
     }
 
@@ -188,6 +191,14 @@ export default function App() {
             );
         } catch (e) {
             setError(e.message);
+
+            if (selectedTaskItem) {
+                const data = await getTodos(
+                    selectedTaskItem.id
+                );
+
+                setTodos(data);
+            }
         }
     }
 

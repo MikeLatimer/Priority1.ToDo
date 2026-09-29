@@ -29,32 +29,23 @@ public class TaskItemsController : ControllerBase
     {
         var taskItem = await _taskItemService.GetByIdAsync(id, ct);
 
-        return taskItem is null
-            ? NotFound()
-            : Ok(TaskItemModel.From(taskItem));
+        return taskItem is null ? NotFound() : Ok(TaskItemModel.From(taskItem));
     }
 
     [HttpPost]
-    public async Task<ActionResult<TaskItemModel>> Create([FromBody] CreateTaskItemRequest request,CancellationToken ct)
+    public async Task<ActionResult<TaskItemModel>> Create([FromBody] CreateTaskItemRequest request, CancellationToken ct)
     {
         var created = await _taskItemService.CreateAsync(request.ToModel(), ct);
 
-        return CreatedAtAction(
-            nameof(GetById),
-            new { id = created.Id },
-            TaskItemModel.From(created));
+        return CreatedAtAction(nameof(GetById), new { id = created.Id }, TaskItemModel.From(created));
     }
 
     [HttpPut("{id:int}")]
-    public async Task<ActionResult<TaskItemModel>> Update(int id,[FromBody] UpdateTaskItemRequest request,CancellationToken ct)
+    public async Task<ActionResult<TaskItemModel>> Update(int id, [FromBody] UpdateTaskItemRequest request, CancellationToken ct)
     {
-        var updated = await _taskItemService.UpdateAsync(
-            request.ToModel(id),
-            ct);
+        var updated = await _taskItemService.UpdateAsync(request.ToModel(id), ct);
 
-        return updated is null
-            ? NotFound()
-            : Ok(TaskItemModel.From(updated));
+        return updated is null ? NotFound() : Ok(TaskItemModel.From(updated));
     }
 
     [HttpDelete("{id:int}")]
@@ -62,8 +53,6 @@ public class TaskItemsController : ControllerBase
     {
         var deleted = await _taskItemService.DeleteAsync(id, ct);
 
-        return deleted
-            ? NoContent()
-            : NotFound();
+        return deleted ? NoContent() : NotFound();
     }
 }

@@ -16,15 +16,12 @@ public class TaskItemService : ITaskItemService
 
 	public async Task<List<TaskItem>> GetAllAsync(CancellationToken ct = default)
 	{
-		return await _context.TaskItems
-			.Where(t => t.IsActive)
-			.ToListAsync(ct);
+		return await _context.TaskItems.Where(t => t.IsActive).ToListAsync(ct);
 	}
 
 	public async Task<TaskItem?> GetByIdAsync(int id, CancellationToken ct = default)
 	{
-		return await _context.TaskItems
-			.FirstOrDefaultAsync(t => t.Id == id && t.IsActive, ct);
+		return await _context.TaskItems.FirstOrDefaultAsync(t => t.Id == id && t.IsActive, ct);
 	}
 
 	public async Task<TaskItem> CreateAsync(TaskItem itemToCreate, CancellationToken ct = default)
@@ -38,8 +35,7 @@ public class TaskItemService : ITaskItemService
 
 	public async Task<TaskItem?> UpdateAsync(TaskItem itemToUpdate, CancellationToken ct = default)
 	{
-		var taskItem = await _context.TaskItems
-			.FirstOrDefaultAsync(t => t.Id == itemToUpdate.Id && t.IsActive, ct);
+		var taskItem = await _context.TaskItems.FirstOrDefaultAsync(t => t.Id == itemToUpdate.Id && t.IsActive, ct);
 
 		if (taskItem is null)
 		{
@@ -53,20 +49,26 @@ public class TaskItemService : ITaskItemService
 		return taskItem;
 	}
 
-	public async Task<bool> DeleteAsync(int id, CancellationToken ct = default)
-	{
-		var taskItem = await _context.TaskItems
-			.FirstOrDefaultAsync(t => t.Id == id && t.IsActive, ct);
+    public async Task<bool> DeleteAsync(int id, CancellationToken ct = default)
+    {
+        var taskItem = await _context.TaskItems.FirstOrDefaultAsync( t => t.Id == id && t.IsActive,ct);
 
-		if (taskItem is null)
-		{
-			return false;
-		}
+        if (taskItem is null)
+        {
+            return false;
+        }
 
-		taskItem.IsActive = false;
+        taskItem.IsActive = false;
 
-		await _context.SaveChangesAsync(ct);
+        var todos = await _context.Todos.Where(t =>t.TaskItemId == id && t.IsActive).ToListAsync(ct);
 
-		return true;
-	}
+        foreach (var todo in todos)
+        {
+            todo.IsActive = false;
+        }
+
+        await _context.SaveChangesAsync(ct);
+
+        return true;
+    }
 }

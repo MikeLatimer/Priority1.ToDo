@@ -15,10 +15,14 @@ export default function AddTodoForm({ onAdd }) {
             return;
         }
 
-        await onAdd({
+        const success = await onAdd({
             title: trimmed,
             dueDate: dueDate || null,
         });
+
+        if (!success) {
+            return;
+        }
 
         setTitle('');
         setDueDate('');

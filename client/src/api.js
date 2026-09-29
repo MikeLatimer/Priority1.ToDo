@@ -5,12 +5,32 @@ const TODOS_URL = `${API_BASE_URL}/todos`;
 const TASKS_URL = `${API_BASE_URL}/tasks`;
 
 async function handle(res) {
-  if (!res.ok) {
-    throw new Error(`Request failed: ${res.status} ${res.statusText}`);
-  }
+    if (!res.ok) {
+        let message = `Request failed: ${res.status} ${res.statusText}`;
 
-  // 204 No Content (e.g. DELETE) has no body to parse.
-  return res.status === 204 ? null : res.json();
+        try {
+            const error = await res.json();
+
+            if (error.errors) {
+                const validationMessages = Object.values(error.errors)
+                    .flat();
+
+                if (validationMessages.length > 0) {
+                    message = validationMessages.join(' ');
+                }
+            } else if (error.title) {
+                message = error.title;
+            } else if (error.message) {
+                message = error.message;
+            }
+        } catch {
+            // Keep the default message if the response is not JSON.
+        }
+
+        throw new Error(message);
+    }
+
+    return res.status === 204 ? null : res.json();
 }
 
 
