@@ -1,102 +1,220 @@
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&display=swap');
+
 :root {
-  font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-  color: #1f2328;
-  background: #f6f8fa;
+    --priority-black: #000000;
+    --priority-yellow: #ffd400;
+    --priority-yellow-hover: #e6bf00;
+    --priority-white: #ffffff;
+    --priority-light: #f8f9fa;
+    --priority-border: #dee2e6;
+    --priority-danger: #dc3545;
+    color: var(--priority-black);
+    background: var(--priority-light);
+}
+
+html,
+body,
+#root {
+    min-height: 100%;
+    margin: 0;
 }
 
 body {
-  margin: 0;
-  padding: 2rem 1rem;
+    background: var(--priority-light);
+}
+
+/* Top black branded header */
+.app-header {
+    background: var(--priority-black);
+    padding: 1.5rem 1rem;
+}
+
+.app-header-inner {
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.app-logo {
+    height: 50px;
+    width: auto;
+    display: block;
+}
+
+/* Main content area */
+.app-content {
+    min-height: calc(100vh - 98px);
+    padding: 2rem 1rem;
+    background-color: var(--priority-light);
+    background-image: url("https://www.priority1.com/wp-content/themes/Priority1-WP-Theme/assets/images/background.png");
+    background-repeat: repeat;
+    background-position: center top;
 }
 
 .app {
-  max-width: 640px;
-  margin: 0 auto;
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
 }
 
-h1 {
-  font-size: 1.5rem;
-  margin: 0 0 1rem;
+/* Section header */
+.section-header {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 1rem;
 }
 
-.add-form {
-  display: flex;
-  gap: 0.5rem;
-  margin-bottom: 1.5rem;
+.section-header h2 {
+    margin: 0;
+    font-weight: 600;
+    color: var(--priority-black);
 }
 
-.add-form input {
-  flex: 1;
-  padding: 0.5rem 0.6rem;
-  border: 1px solid #d0d7de;
-  border-radius: 6px;
-  font-size: 1rem;
+/* Grid container */
+.grid-panel {
+    background: var(--priority-white);
+    border: 1px solid var(--priority-border);
+    border-radius: 6px;
+    overflow: hidden;
 }
 
-button {
-  padding: 0.5rem 0.8rem;
-  border: 1px solid #d0d7de;
-  border-radius: 6px;
-  background: #fff;
-  cursor: pointer;
-  font-size: 0.9rem;
+.grid-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    height: 100%;
 }
 
-button:hover {
-  background: #f3f4f6;
+/* Keep normal Bootstrap font by default */
+.btn {
+    font-family: var(--bs-body-font-family);
 }
 
-button.primary {
-  background: #1f883d;
-  border-color: #1f883d;
-  color: #fff;
+/* Priority1 yellow buttons */
+.btn.btn-priority {
+    background-color: var(--priority-yellow);
+    border-color: var(--priority-yellow);
+    color: var(--priority-black);
+    font-family: 'Oswald', sans-serif;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
 }
 
-button.primary:hover {
-  background: #1a7f37;
+    .btn.btn-priority:hover,
+    .btn.btn-priority:focus {
+        background-color: var(--priority-yellow-hover);
+        border-color: var(--priority-yellow-hover);
+        color: var(--priority-black);
+    }
+
+/* Priority1 black buttons */
+.btn.btn-priority-dark {
+    background-color: var(--priority-black);
+    border-color: var(--priority-black);
+    color: var(--priority-white);
+    font-family: 'Oswald', sans-serif;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
 }
 
-ul.todo-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
+    .btn.btn-priority-dark:hover,
+    .btn.btn-priority-dark:focus {
+        background-color: #252525;
+        border-color: #252525;
+        color: var(--priority-white);
+    }
+
+/* Optional: match Delete button font too */
+.btn.btn-danger {
+    font-family: 'Oswald', sans-serif;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
 }
 
-.todo-item {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  padding: 0.6rem 0.75rem;
-  background: #fff;
-  border: 1px solid #d0d7de;
-  border-radius: 8px;
+/* Keep AG Grid text dark */
+.ag-root-wrapper,
+.ag-root,
+.ag-header,
+.ag-row,
+.ag-cell {
+    color: var(--priority-black);
 }
 
-.todo-item .title {
-  flex: 1;
+/* Light grid header */
+.ag-header {
+    background: #f7f7f7;
 }
 
-.todo-item .title.complete {
-  text-decoration: line-through;
-  color: #6e7781;
+/* Slight Priority1-style hover */
+.ag-row-hover {
+    background-color: #fffbea !important;
 }
 
-.todo-item input.edit-title {
-  flex: 1;
-  padding: 0.35rem 0.5rem;
-  border: 1px solid #d0d7de;
-  border-radius: 6px;
-  font-size: 1rem;
+/* Remove AG Grid focus border */
+.ag-cell:focus,
+.ag-cell-focus {
+    outline: none !important;
 }
 
-.muted {
-  color: #6e7781;
+/* AG Grid column header font */
+.ag-header-cell-text {
+    font-family: 'Oswald', sans-serif;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
 }
 
-.error {
-  color: #cf222e;
-  margin-bottom: 1rem;
+.section-header h2 {
+    margin: 0;
+    font-family: 'Oswald', sans-serif;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--priority-black);
+}
+
+.todo-panel {
+    background: var(--priority-white);
+    border: 1px solid var(--priority-border);
+    border-radius: 6px;
+    padding: 1.25rem;
+}
+
+.todo-grid-overdue {
+    background-color: #fff3f3 !important;
+}
+
+.todo-grid-overdue .ag-cell:first-child {
+    border-left: 4px solid #dc3545;
+}
+
+.todo-panel .form-label {
+    margin-bottom: 0.4rem;
+    font-family: 'Oswald', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.todo-panel .form-control {
+    min-height: 42px;
+}
+
+.todo-panel .btn {
+    min-height: 42px;
+}
+
+.priority-label {
+    margin-bottom: 0.15rem;
+    font-family: 'Oswald', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #6c757d;
 }

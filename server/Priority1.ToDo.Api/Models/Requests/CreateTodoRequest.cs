@@ -6,16 +6,23 @@ namespace Priority1.ToDo.Api.Models.Requests;
 public class CreateTodoRequest
 {
     [Required]
-    public required string Title { get; set; }
+    [MaxLength(200)]
+    public string Title { get; set; } = string.Empty;
 
-    public bool IsComplete { get; set; }
+    public bool IsComplete { get; set; } = false;
+
+    public int TaskItemId { get; set; }
+
+    public DateTime? DueDate { get; set; }
 
     public Todo ToModel()
     {
         return new Todo
         {
             Title = Title,
-            IsComplete = IsComplete
+            IsComplete = IsComplete,
+            TaskItemId = TaskItemId,
+            DueDate = DueDate
         };
     }
 }

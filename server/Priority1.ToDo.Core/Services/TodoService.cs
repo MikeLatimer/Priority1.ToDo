@@ -14,14 +14,21 @@ public class TodoService : ITodoService
         _context = context;
     }
 
-    public async Task<List<Todo>> GetAllAsync(CancellationToken ct = default)
+    public async Task<List<Todo>> GetAllAsync(int? taskItemId = null, CancellationToken ct = default)
     {
-        return await _context.Todos.ToListAsync(ct);
+        var query = _context.Todos.Where(t => t.IsActive);
+
+        if (taskItemId.HasValue)
+        {
+            query = query.Where(t => t.TaskItemId == taskItemId.Value);
+        }
+
+        return await query.ToListAsync(ct);
     }
 
     public async Task<Todo?> GetByIdAsync(int id, CancellationToken ct = default)
     {
-        return await _context.Todos.FirstOrDefaultAsync(t => t.Id == id, ct);
+        return await _context.Todos.FirstOrDefaultAsync( t => t.Id == id && t.IsActive,ct);
     }
 
     public async Task<Todo> CreateAsync(Todo itemToCreate, CancellationToken ct = default)
@@ -33,7 +40,8 @@ public class TodoService : ITodoService
 
     public async Task<Todo?> UpdateAsync(Todo itemToUpdate, CancellationToken ct = default)
     {
-        var todo = await _context.Todos.FirstOrDefaultAsync(t => t.Id == itemToUpdate.Id, ct);
+        var todo = await _context.Todos.FirstOrDefaultAsync(t => t.Id == itemToUpdate.Id && t.IsActive,ct);
+
         if (todo is null)
         {
             return null;
@@ -41,21 +49,27 @@ public class TodoService : ITodoService
 
         todo.Title = itemToUpdate.Title;
         todo.IsComplete = itemToUpdate.IsComplete;
+        todo.TaskItemId = itemToUpdate.TaskItemId;
+        todo.DueDate = itemToUpdate.DueDate;
 
         await _context.SaveChangesAsync(ct);
+
         return todo;
     }
 
     public async Task<bool> DeleteAsync(int id, CancellationToken ct = default)
     {
-        var todo = await _context.Todos.FirstOrDefaultAsync(t => t.Id == id, ct);
+        var todo = await _context.Todos.FirstOrDefaultAsync( t => t.Id == id && t.IsActive,ct);
+
         if (todo is null)
         {
             return false;
         }
 
-        _context.Todos.Remove(todo);
+        todo.IsActive = false;
+
         await _context.SaveChangesAsync(ct);
+
         return true;
     }
 }
